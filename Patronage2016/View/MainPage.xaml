@@ -17,16 +17,21 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="15*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="3*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Column="1" Grid.Row="1">
-            <Image x:Name="Img1" Source="{Binding ImgSource, UpdateSourceTrigger=PropertyChanged}"  /> 
+            <Button x:Name="SwitchImgBtn" Margin="0" Padding="0" Command="{Binding SwitchImageCommand}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  >
+                <Viewbox StretchDirection="DownOnly" Stretch="Uniform">
+                    <Image x:Name="Img1" Source="{Binding ImgSource, UpdateSourceTrigger=PropertyChanged}" Stretch="None"  />
+                </Viewbox>
+            </Button>
         </StackPanel>
 
         <StackPanel Grid.Column="1" Grid.Row="2">
-            <TextBox x:Name="Img1TextBox" Text="{Binding PathToImage, UpdateSourceTrigger=PropertyChanged}"  />
+            <TextBlock x:Name="Img1TextBox" Text="{Binding InformationsTextBlock, UpdateSourceTrigger=PropertyChanged}"  />
         </StackPanel>
     </Grid>
 </Page>
