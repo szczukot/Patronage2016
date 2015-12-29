@@ -133,6 +133,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Converters\" />
     <Folder Include="Model\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
