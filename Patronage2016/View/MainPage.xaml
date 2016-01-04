@@ -5,33 +5,69 @@
     xmlns:local="using:Patronage2016"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     mc:Ignorable="d"
     DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
     >
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="Grid1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="15*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition x:Name="MainGridColumn" Width="15*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="10*"/>
+            <RowDefinition x:Name="MainGridRow" Height="10*"/>
             <RowDefinition Height="3*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <Rectangle Grid.RowSpan="1000" Grid.Column="0" Grid.Row="1">
+            <Rectangle.Fill>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="SteelBlue" Offset="0" />
+                    <GradientStop Color="LightSteelBlue" Offset="1" />
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Rectangle Grid.ColumnSpan="100"  Grid.Row="0">
+            <Rectangle.Fill>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="LightBlue" Offset="0" />
+                    <GradientStop Color="SteelBlue" Offset="1" />
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="Patronage 2016" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="24" FontStretch="UltraExpanded"/>
+        <StackPanel Grid.Row="1" Grid.Column="0" >
+            <Button x:Name="GoToPhotosListBtn" Content="Gallery" Command="{Binding GoToPhotosListCommand}" Margin="5" HorizontalAlignment="Stretch" Background="WhiteSmoke"/>
+            <Button x:Name="TakePhotoBtn" Content="Take a photo" Command="{Binding PhotoCommand}" Margin ="5" HorizontalAlignment="Stretch" Background="WhiteSmoke"/>
+            <Button x:Name="ShareBtn" Content="Share" Command="{Binding ShareCommand}" Margin ="5" HorizontalAlignment="Stretch" Background="WhiteSmoke"/>
+        </StackPanel>
+            
         <StackPanel Grid.Column="1" Grid.Row="1">
-            <Button x:Name="SwitchImgBtn" Margin="0" Padding="0" Command="{Binding SwitchImageCommand}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  >
-                <Viewbox StretchDirection="DownOnly" Stretch="Uniform">
-                    <Image x:Name="Img1" Source="{Binding ImgSource, UpdateSourceTrigger=PropertyChanged}" Stretch="None"  />
+            <Button x:Name="SwitchImgBtn" 
+                    Margin="0" 
+                    Padding="0" 
+                    Command="{Binding SwitchImageCommand}" 
+                    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
+                    VerticalAlignment="Stretch" 
+                    HorizontalAlignment="Stretch"  
+                    MaxWidth="{Binding ActualWidth, ElementName=MainGridColumn, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                    MaxHeight="{Binding ActualHeight, ElementName=MainGridRow, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                    >
+                <Viewbox StretchDirection="DownOnly" UseLayoutRounding="True" >
+                    <Image x:Name="Img1" Source="{Binding ImgSource, UpdateSourceTrigger=PropertyChanged}" Stretch="Fill" />
                 </Viewbox>
             </Button>
         </StackPanel>
 
-        <StackPanel Grid.Column="1" Grid.Row="2">
+        <StackPanel Grid.Column="1" Grid.Row="2" Margin="10">
             <TextBlock x:Name="Img1TextBox" Text="{Binding InformationsTextBlock, UpdateSourceTrigger=PropertyChanged}"  />
+            
         </StackPanel>
+        <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding PathToImage}" IsReadOnly="True" MaxHeight="35"/>
     </Grid>
 </Page>

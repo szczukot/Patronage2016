@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Views;
 using Microsoft.Practices.ServiceLocation;
+using Patronage2016.Utils;
 
 namespace Patronage2016.ViewModel
 {
@@ -16,19 +18,10 @@ namespace Patronage2016.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            ////if (ViewModelBase.IsInDesignModeStatic)
-            ////{
-            ////    // Create design time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
-            ////}
-            ////else
-            ////{
-            ////    // Create run time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DataService>();
-            ////}
-
+            SimpleIoc.Default.Register<PhotosListViewModel>();
             SimpleIoc.Default.Register<MainViewModel>();
         }
+
 
         public MainViewModel Main
         {
@@ -38,9 +31,22 @@ namespace Patronage2016.ViewModel
             }
         }
 
+        public PhotosListViewModel PhotosList
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<PhotosListViewModel>();
+                
+            }
+        }
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels
+        }
+        public static void RegisterSharingService()
+        {
+            SimpleIoc.Default.Register<SharingService>(createInstanceImmediately: true);
         }
     }
 }

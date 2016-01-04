@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Patronage2016.ViewModel;
 
 namespace Patronage2016
 {
@@ -42,7 +43,8 @@ namespace Patronage2016
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-
+            ViewModelLocator.RegisterSharingService();
+            base.OnLaunched(e);
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
