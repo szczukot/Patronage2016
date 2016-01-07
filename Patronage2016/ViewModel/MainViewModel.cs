@@ -6,6 +6,7 @@ using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
@@ -13,6 +14,7 @@ using Windows.ApplicationModel.Email;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.Media.Capture;
 using Windows.Media.Effects;
 using Windows.Media.MediaProperties;
@@ -69,12 +71,11 @@ namespace Patronage2016.ViewModel
 
 
         #region Methods
-
         private async void Initialize()
         {
 
             StorageFolder picturesFolder = KnownFolders.PicturesLibrary;
-            var files = await picturesFolder.GetFilesAsync();
+            var files = await picturesFolder.GetFilesAsync(CommonFileQuery.OrderByDate);
 
             foreach (var f in files)
             {
@@ -221,46 +222,34 @@ namespace Patronage2016.ViewModel
             }
             try
             {
-                /*else if (devices.Count == 1)
-            {
-                if (!devices[0].Pairing.IsPaired)
-                {
-                    bool result = await Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-webcam"));
-                }
-            }
-            else
-            {
-                if(!devices.FirstOrDefault().Pairing.IsPaired)
-                    await Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-webcam"));
-            }*/
-
-
                 CameraCaptureUI dialog = new CameraCaptureUI();
 
                 StorageFile file = await dialog.CaptureFileAsync(CameraCaptureUIMode.Photo);
                 if (file != null)
                 {
                     string photoName = GenerateFileName("Photo") + ".png";
-                    StorageFile fileCopy =
-                        await
-                            file.CopyAsync(KnownFolders.PicturesLibrary, photoName,
-                                NameCollisionOption.GenerateUniqueName);
+                    var fileCopy = await file.CopyAsync(KnownFolders.CameraRoll, photoName,NameCollisionOption.GenerateUniqueName);
+                    
+                    if (bitMapsList.Count > 0)
+                        bitMapsList.Clear();
+                    if (imageProps.Count > 0)
+                        imageProps.Clear();
+                    if (pathes.Count > 0)
+                        pathes.Clear();
+                    if (thumbnailsList.Count > 0)
+                        thumbnailsList.Clear();
+                    if (streamList.Count > 0)
+                        streamList.Clear();
+
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    Initialize();
                 }
 
-                if (bitMapsList.Count > 0)
-                    bitMapsList.Clear();
-                if (imageProps.Count > 0)
-                    imageProps.Clear();
-                if (pathes.Count > 0)
-                    pathes.Clear();
-                if (thumbnailsList.Count > 0)
-                    thumbnailsList.Clear();
-                if (streamList.Count > 0)
-                    streamList.Clear();
-                Initialize();
             }
             catch (Exception ex)
             {
+                MessageDialog dialogbox = new MessageDialog(ex.Message, "Error");
+                await dialogbox.ShowAsync();
                 bool result = await Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-webcam"));
             }
 
@@ -292,7 +281,7 @@ namespace Patronage2016.ViewModel
         {
             DataTransferManager.ShowShareUI();
         }
-        private DataTransferManager dataTransferManager;
+
         #endregion
 
         public void OnShareRequested(DataRequest dataRequest)

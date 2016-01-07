@@ -14,11 +14,11 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2*" MinWidth="80"/>
             <ColumnDefinition x:Name="MainGridColumn" Width="15*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="*" MinHeight="35" />
             <RowDefinition x:Name="MainGridRow" Height="13*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -26,53 +26,60 @@
         <Rectangle Grid.RowSpan="1000" Grid.Column="0" Grid.Row="1">
             <Rectangle.Fill>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="SteelBlue" Offset="0" />
-                    <GradientStop Color="LightSteelBlue" Offset="1" />
+                    <GradientStop Color="#FAAB23" Offset="0" />
+                    <GradientStop Color="#F79E36" Offset="1" />
                 </LinearGradientBrush>
             </Rectangle.Fill>
         </Rectangle>
         <Rectangle Grid.ColumnSpan="100"  Grid.Row="0">
             <Rectangle.Fill>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="LightBlue" Offset="0" />
-                    <GradientStop Color="SteelBlue" Offset="1" />
+                    <GradientStop Color="#F79E36" Offset="1" />
+                    <GradientStop Color="#FAAB23" Offset="0" />
                 </LinearGradientBrush>
             </Rectangle.Fill>
         </Rectangle>
 
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="Patronage 2016" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="24" FontStretch="UltraExpanded"/>
-        
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                   Text="Patronage 2016" 
+                   VerticalAlignment="Center" 
+                   HorizontalAlignment="Center" 
+                   FontSize="24" 
+                   FontStretch="UltraExpanded" 
+                   Foreground="#C6222B" 
+                   FontWeight="Bold"/>
+            
         <StackPanel Grid.Row="1" Grid.Column="0">
-            <Button x:Name="GoBackButton" Content ="Go Back" Margin="5" Command="{Binding GoBackCommand}" Background="WhiteSmoke" HorizontalAlignment="Stretch"/>
-        </StackPanel>
-
-        <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-            <GridView x:Name="GridView" ItemsSource="{Binding GalleryCollection}" 
-                      MaxWidth="{Binding Path=ActualWidth, ElementName=MainGridColumn, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                      MaxHeight="{Binding Path=ActualHeight, ElementName=MainGridRow, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                      
-                      IsItemClickEnabled="False"
-                      >
-                <GridView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel >
-                                <Button Command="{Binding DataContext.SelectedItemCommand,ElementName=GridView}" 
-                                    CommandParameter="{Binding ImagePath}"
-                                    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                                    Padding="0"
-                                    Height="{Binding ActualHeight, ElementName=Thumbnail}"
-                                    Width="{Binding ActualWidth,ElementName=Thumbnail}"
-                                    >
-                                    <Image x:Name="Thumbnail" Source="{Binding Path=Image}" Stretch="None"/>
-                                </Button>
-                                <TextBlock Text="{Binding Path=ImagePath}"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </DataTemplate>
-                </GridView.ItemTemplate>
-            </GridView>
+            <Button x:Name="GoBackButton" Content ="Back" Margin="5" Command="{Binding GoBackCommand}" Background="#C6222B" HorizontalAlignment="Stretch" Foreground="WhiteSmoke"/>
         </StackPanel>
         
+        <ScrollViewer Grid.Row="1" Grid.Column="1">
+            <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                <GridView x:Name="GridView" ItemsSource="{Binding GalleryCollection}" 
+                          IsItemClickEnabled="False"
+                          >
+                    <GridView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Width="{Binding ElementName=Thumbnailbtn, Path=ActualWidth}"
+                                            Height="{Binding ElementName=Thumbnailbtn, Path=ActualWidth}"
+                                    >
+                                    <Button x:Name="Thumbnailbtn" Command="{Binding DataContext.SelectedItemCommand,ElementName=GridView}" 
+                                        CommandParameter="{Binding ImagePath}"
+                                        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                                        Padding="0"
+                                        Height="{Binding ActualHeight, ElementName=Thumbnail}"
+                                        Width="{Binding ActualWidth,ElementName=Thumbnail}"
+                                        >
+                                        <Image x:Name="Thumbnail" Source="{Binding Path=Image}" Stretch="None"/>
+                                    </Button>
+                                    <TextBlock Text="{Binding Path=ImagePath}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

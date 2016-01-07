@@ -26,7 +26,7 @@ namespace Patronage2016.ViewModel
         private List<string> pathesList;
         private Navigation.NavigationService _nav = new Navigation.NavigationService();
         private ObservableCollection<GalleryModel> galleryCollection;
-        private object selectedItem;
+
 
         public PhotosListViewModel()
         {
