@@ -50,8 +50,9 @@ namespace Patronage2016.ViewModel
         private List<ImageProperties> imageProps;
         private string informationsTextBlock;
         private Navigation.NavigationService _nav = new Navigation.NavigationService();
-        List<StorageFile> streamList = new List<StorageFile>();
-
+        private List<StorageFile> streamList = new List<StorageFile>();
+        private List<string> ImageExtensions = new List<string> { ".JPG", ".JPE", ".BMP", ".GIF", ".PNG" };
+        private bool progressRingActive=false;
         public MainViewModel()
         {
             Messenger.Default.Register<CurrentIndexMessage>(this, x=>HandleIndexMessage(x.CurrentIndex));
@@ -73,30 +74,50 @@ namespace Patronage2016.ViewModel
         #region Methods
         private async void Initialize()
         {
-
-            StorageFolder picturesFolder = KnownFolders.PicturesLibrary;
-            var files = await picturesFolder.GetFilesAsync(CommonFileQuery.OrderByDate);
-
-            foreach (var f in files)
+            try
             {
-                var stream = await f.OpenReadAsync();
-                streamList.Add((StorageFile)f);
-                
-                var bitmapImage = new BitmapImage();
-                bitmapImage.SetSource(stream);
-                bitMapsList.Add(bitmapImage);
-                pathes.Add(f.Path);
-                ImageProperties temp = await GetImageProperties((StorageFile) f);
-                //thumbnails
-                var thumbnailImage = new BitmapImage();
-                thumbnailImage.SetSource(await f.GetThumbnailAsync(ThumbnailMode.PicturesView));
-                thumbnailsList.Add(thumbnailImage);
+                ProgressRingActive = true;
+                StorageFolder picturesFolder = KnownFolders.PicturesLibrary;
+                var query = CommonFileQuery.DefaultQuery;
+                var queryOptions = new QueryOptions(query, new[] { ".png", ".jpg" });
+                queryOptions.FolderDepth = FolderDepth.Deep;
+                var queryResult = picturesFolder.CreateFileQueryWithOptions(queryOptions);
+                var files = await queryResult.GetFilesAsync();
+                //var files = await picturesFolder.GetFilesAsync(CommonFileQuery.OrderByDate);
+
+                foreach (var f in files)
+                {
+                  /*  if (!ImageExtensions.Contains(Path.GetExtension(f.Name).ToUpperInvariant()))
+                        continue;*/
+
+                    var stream = await f.OpenReadAsync();
+                    streamList.Add((StorageFile) f);
+
+                    var bitmapImage = new BitmapImage();
+                    bitmapImage.SetSource(stream);
+                    bitMapsList.Add(bitmapImage);
+                    pathes.Add(f.Path);
+                    ImageProperties temp = await GetImageProperties((StorageFile) f);
+                    //thumbnails
+                    var thumbnailImage = new BitmapImage();
+                    thumbnailImage.SetSource(await f.GetThumbnailAsync(ThumbnailMode.PicturesView));
+                    thumbnailsList.Add(thumbnailImage);
+                }
+                if (bitMapsList.Count >= 1)
+                {
+                    ImgSource = bitMapsList[currentBitmapIndex];
+                    InformationsTextBlock = generateInformations(imageProps[currentBitmapIndex]);
+                    PathToImage = pathes[currentBitmapIndex];
+                }
             }
-            if (bitMapsList.Count >= 1)
+            catch (Exception ex)
             {
-                ImgSource = bitMapsList[currentBitmapIndex];
-                InformationsTextBlock = generateInformations(imageProps[currentBitmapIndex]);
-                PathToImage = pathes[currentBitmapIndex];
+                MessageDialog msg = new MessageDialog(ex.Message);
+                await msg.ShowAsync();
+            }
+            finally
+            {
+                ProgressRingActive = false;
             }
         }
 
@@ -123,6 +144,22 @@ namespace Patronage2016.ViewModel
 
         #region Getters/Setters
 
+        public bool ProgressRingActive
+        {
+            get
+            {
+                return progressRingActive;
+                
+            }
+            set
+            {
+                if (progressRingActive != value)
+                {
+                    progressRingActive = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
         public string InformationsTextBlock
         {
             get { return informationsTextBlock; }

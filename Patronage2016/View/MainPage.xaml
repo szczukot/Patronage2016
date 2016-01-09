@@ -7,9 +7,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:converters="using:Patronage2016.Converters"
     mc:Ignorable="d"
     DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
     >
+    
+    <Page.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Page.Resources>
     
     <Grid x:Name="Grid1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
@@ -53,6 +58,16 @@
             <Button x:Name="TakePhotoBtn" Content="Photo" Command="{Binding PhotoCommand}" Margin ="5" HorizontalAlignment="Stretch" Background="#C6222B" Foreground="WhiteSmoke" />
             <Button x:Name="ShareBtn" Content="Share" Command="{Binding ShareCommand}" Margin ="5" HorizontalAlignment="Stretch" Background="#C6222B" Foreground="WhiteSmoke"/>
         </StackPanel>
+
+        <ProgressRing x:Name="InitializeProgressRing"
+                      Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"
+                      Width="50"
+                      Height="50"
+                      Visibility="{Binding ProgressRingActive, Converter={StaticResource BoolToVisibilityConverter}}"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      IsActive="{Binding ProgressRingActive}"
+                      />
         
         <StackPanel Grid.Column="1" Grid.Row="1">
             <Button x:Name="SwitchImgBtn" 
