@@ -94,9 +94,9 @@ namespace Patronage2016.ViewModel
                     streamList.Add((StorageFile) f);
                     var bitmapImage = new BitmapImage();
 #if PHONE
-                    bitmapImage.SetSource(await f.GetScaledImageAsThumbnailAsync(ThumbnailMode.SingleItem,100));
+                    await bitmapImage.SetSourceAsync(await f.GetScaledImageAsThumbnailAsync(ThumbnailMode.SingleItem,240,ThumbnailOptions.ResizeThumbnail));
 #else
-                    bitmapImage.SetSource(stream);
+                    await bitmapImage.SetSourceAsync(stream);
 #endif
                     bitMapsList.Add(bitmapImage);
                     pathes.Add(f.Path);
@@ -104,7 +104,7 @@ namespace Patronage2016.ViewModel
                     //thumbnails
                     var thumbnailImage = new BitmapImage();
 #if PHONE
-                    thumbnailImage.SetSource(await f.GetThumbnailAsync(ThumbnailMode.ListView));
+                    thumbnailImage.SetSource(await f.GetThumbnailAsync(ThumbnailMode.ListView,80));
 #else
                     thumbnailImage.SetSource(await f.GetThumbnailAsync(ThumbnailMode.PicturesView));
 #endif
@@ -126,6 +126,7 @@ namespace Patronage2016.ViewModel
                 ProgressRingActive = false;
             }
         }
+
 
         private async Task<ImageProperties> GetImageProperties(StorageFile imageFile)
         {

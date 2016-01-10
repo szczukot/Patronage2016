@@ -125,6 +125,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\BadgeLogo.scale-100.png" />
+    <Content Include="Assets\Camera-64.png" />
+    <Content Include="Assets\logo.png" />
+    <Content Include="Assets\Long Arrow Left-64.png" />
+    <Content Include="Assets\Picture-64.png" />
+    <Content Include="Assets\Share-64.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Assets\Square150x150Logo.scale-100.png" />
     <Content Include="Assets\Square310x310Logo.scale-100.png" />
