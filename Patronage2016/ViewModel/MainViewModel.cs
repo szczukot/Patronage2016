@@ -18,6 +18,7 @@ using Windows.Foundation.Metadata;
 using Windows.Media.Capture;
 using Windows.Media.Effects;
 using Windows.Media.MediaProperties;
+using Windows.Phone.UI.Input;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.BulkAccess;
@@ -42,7 +43,6 @@ namespace Patronage2016.ViewModel
     public class MainViewModel : ViewModelBase, ISupportSharing
     {
         private List<string> pathes;
-        private string pathToImage;
         private BitmapImage imgSource;
         private List<BitmapImage> bitMapsList;
         private List<BitmapImage> thumbnailsList;
@@ -51,10 +51,11 @@ namespace Patronage2016.ViewModel
         private string informationsTextBlock;
         private Navigation.NavigationService _nav = new Navigation.NavigationService();
         private List<StorageFile> streamList = new List<StorageFile>();
-        private List<string> ImageExtensions = new List<string> { ".JPG", ".JPE", ".BMP", ".GIF", ".PNG" };
+       // private List<string> ImageExtensions = new List<string> { ".JPG", ".JPE", ".BMP", ".GIF", ".PNG" };
         private bool progressRingActive=false;
         public MainViewModel()
         {
+
             Messenger.Default.Register<CurrentIndexMessage>(this, x=>HandleIndexMessage(x.CurrentIndex));
             currentBitmapIndex = 0;
             bitMapsList = new List<BitmapImage>();
@@ -89,25 +90,30 @@ namespace Patronage2016.ViewModel
                 {
                   /*  if (!ImageExtensions.Contains(Path.GetExtension(f.Name).ToUpperInvariant()))
                         continue;*/
-
                     var stream = await f.OpenReadAsync();
                     streamList.Add((StorageFile) f);
-
                     var bitmapImage = new BitmapImage();
+#if PHONE
+                    bitmapImage.SetSource(await f.GetScaledImageAsThumbnailAsync(ThumbnailMode.SingleItem,100));
+#else
                     bitmapImage.SetSource(stream);
+#endif
                     bitMapsList.Add(bitmapImage);
                     pathes.Add(f.Path);
-                    ImageProperties temp = await GetImageProperties((StorageFile) f);
+                    await GetImageProperties((StorageFile) f);
                     //thumbnails
                     var thumbnailImage = new BitmapImage();
+#if PHONE
+                    thumbnailImage.SetSource(await f.GetThumbnailAsync(ThumbnailMode.ListView));
+#else
                     thumbnailImage.SetSource(await f.GetThumbnailAsync(ThumbnailMode.PicturesView));
+#endif
                     thumbnailsList.Add(thumbnailImage);
                 }
-                if (bitMapsList.Count >= 1)
+                 if (bitMapsList.Count >= 1)
                 {
                     ImgSource = bitMapsList[currentBitmapIndex];
                     InformationsTextBlock = generateInformations(imageProps[currentBitmapIndex]);
-                    PathToImage = pathes[currentBitmapIndex];
                 }
             }
             catch (Exception ex)
@@ -140,9 +146,9 @@ namespace Patronage2016.ViewModel
             return props;
         }
 
-        #endregion
+#endregion
 
-        #region Getters/Setters
+#region Getters/Setters
 
         public bool ProgressRingActive
         {
@@ -186,21 +192,9 @@ namespace Patronage2016.ViewModel
             }
         }
 
-        public string PathToImage
-        {
-            get { return pathToImage; }
-            set
-            {
-                if (pathToImage != value)
-                {
-                    pathToImage = value;
-                    RaisePropertyChanged("PathToImage");
-                }
-            }
-        }
-        #endregion
+#endregion
 
-        #region Buttons
+#region Buttons
         public ICommand SwitchImageCommand { get; set; }
 
         private void SwitchImage()
@@ -214,7 +208,6 @@ namespace Patronage2016.ViewModel
                     currentBitmapIndex = 0;
                 ImgSource = bitMapsList[currentBitmapIndex];
                 InformationsTextBlock = generateInformations(imageProps[currentBitmapIndex]);
-                PathToImage = pathes[currentBitmapIndex];
             }
         }
 
@@ -222,22 +215,22 @@ namespace Patronage2016.ViewModel
         {
             string infos = "PICTURE INFORMATIONS: ";
             if (!string.IsNullOrEmpty(props.CameraManufacturer))
-                infos += "\nCameraManufacturer:\t" + props.CameraManufacturer;
+                infos += "\nCameraManufacturer: " + props.CameraManufacturer;
             if (!string.IsNullOrEmpty(props.CameraModel))
-                infos += "\nCameraModel:\t" + props.CameraModel;
+                infos += "\nCameraModel: " + props.CameraModel;
             if (!string.IsNullOrEmpty(props.Title))
-                infos += "\nTitle:\t" + props.Title;
+                infos += "\nTitle: " + props.Title;
             if (props.Width != 0)
-                infos += "\nWidth:\t" + props.Width;
+                infos += "\nWidth: " + props.Width;
             if (props.Height != 0)
-                infos += "\nHeight:\t" + props.Height;
+                infos += "\nHeight: " + props.Height;
             DateTimeOffset? tempDate = props.DateTaken;
             if (tempDate != null)
-                infos += "\nDate taken:\t" + Convert.ToString(props.DateTaken);
+                infos += "\nDate taken: " + Convert.ToString(props.DateTaken);
             if (props.Latitude != null)
-                infos += "\nLatitude:\t" + Convert.ToString(props.Latitude);
+                infos += "\nLatitude: " + Convert.ToString(props.Latitude);
             if (props.Longitude != null)
-                infos += "\nLongitude:\t" + Convert.ToString(props.Longitude);
+                infos += "\nLongitude: " + Convert.ToString(props.Longitude);
 
             return infos;
         }
@@ -311,7 +304,6 @@ namespace Patronage2016.ViewModel
             currentBitmapIndex = index;
             ImgSource = bitMapsList[currentBitmapIndex];
             InformationsTextBlock = generateInformations(imageProps[currentBitmapIndex]);
-            PathToImage = pathes[currentBitmapIndex];
         }
         public ICommand ShareCommand { get; set; }
         private void Share()
@@ -319,7 +311,7 @@ namespace Patronage2016.ViewModel
             DataTransferManager.ShowShareUI();
         }
 
-        #endregion
+#endregion
 
         public void OnShareRequested(DataRequest dataRequest)
         {

@@ -69,7 +69,7 @@
                       IsActive="{Binding ProgressRingActive}"
                       />
         
-        <StackPanel Grid.Column="1" Grid.Row="1">
+        <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,5,40,5">
             <Button x:Name="SwitchImgBtn" 
                     Margin="5" 
                     Padding="0" 
@@ -86,7 +86,7 @@
             </Button>
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" Grid.Column="1" Grid.Row="2">
-            <StackPanel  Margin="1" >
+            <StackPanel  Margin="1,1,40,20" >
                 <TextBlock x:Name="Img1TextBox" Text="{Binding InformationsTextBlock, UpdateSourceTrigger=PropertyChanged}"  
                     FontSize="12"
                     Margin="1"

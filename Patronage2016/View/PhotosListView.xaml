@@ -54,7 +54,7 @@
         </StackPanel>
         
         <ScrollViewer Grid.Row="1" Grid.Column="1">
-            <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+            <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,5,40,5" >
                 <GridView x:Name="GridView" ItemsSource="{Binding GalleryCollection}" 
                           IsItemClickEnabled="False"
                           >
